@@ -217,12 +217,23 @@ def _npv(rate: float, cashflows: list) -> float:
 
 
 def _irr(cashflows: list) -> float:
-    lo, hi = -0.99, 10.0
-    for _ in range(300):
+    """
+    cashflows[0] must be the initial outlay (negative).
+    Returns decimal IRR capped at 5.0 (500%).
+    Returns 0.0 if no valid IRR found.
+    """
+    if not cashflows or cashflows[0] >= 0:
+        return 0.0
+    lo, hi = -0.99, 5.0
+    npv_lo = _npv(lo, cashflows)
+    npv_hi = _npv(hi, cashflows)
+    if npv_lo * npv_hi > 0:
+        return 0.0
+    for _ in range(400):
         mid = (lo + hi) / 2
         v = _npv(mid, cashflows)
-        if abs(v) < 0.5:
-            break
+        if abs(v) < 1:
+            return mid
         if v > 0:
             lo = mid
         else:
@@ -285,8 +296,9 @@ def compute_financials(
     proj_cfs  = [c["ebitda"] for c in cfs]
     npv_eq    = _npv(discount_rate / 100, eq_cfs) - equity
     npv_proj  = _npv(discount_rate / 100, proj_cfs) - total_capex
-    irr_eq    = _irr(eq_cfs) * 100
-    irr_proj  = _irr(proj_cfs) * 100
+    # IRR needs initial outlay as year-0 negative cashflow
+    irr_eq    = (_irr([-equity] + eq_cfs) or 0.0) * 100
+    irr_proj  = (_irr([-total_capex] + proj_cfs) or 0.0) * 100
 
     # Payback
     cum = 0.0
