@@ -23,7 +23,7 @@ LBLUE  = (219, 234, 254)
 
 
 def _euro(n: float) -> str:
-    return f"€{abs(n):,.0f}"
+    return f"EUR {abs(n):,.0f}"
 
 def _pct(n: float, d: int = 1) -> str:
     return f"{n:.{d}f}%"
@@ -281,7 +281,7 @@ def build_report(
         ("Actual Cycles/Day",    f"{actual_cycles:.2f}x",        NAVY),
         ("Min DSCR",             f"{fin['min_dscr']:.2f}x",      dscr_color),
         ("Simple Payback",       f"{fin['payback']:.1f} yr",     NAVY),
-        ("LCOS",                 f"€{fin['lcos']:.1f}/MWh",      NAVY),
+        ("LCOS",                 f"EUR {fin['lcos']:.1f}/MWh",      NAVY),
     ])
 
     pdf.body_text(
@@ -319,7 +319,7 @@ def build_report(
             ["Max State of Charge",  f"{bat['max_soc_pct']}%",          "Protection limit"],
             ["Usable Energy",        f"{bat['cap_mwh']*(bat['max_soc_pct']-bat['min_soc_pct'])/100:.2f} MWh", "Available for dispatch"],
             ["Round-Trip Efficiency",f"{bat['eta']}%",                  "sqrt(η) split per IEC"],
-            ["Degradation Cost",     f"€{bat['deg_cost']}/MWh",         "Linear throughput model"],
+            ["Degradation Cost",     f"EUR {bat['deg_cost']}/MWh",         "Linear throughput model"],
             ["Cycles/Day Limit",     f"{bat['cycles_per_day']}x",       "User-defined constraint"],
             ["Max Daily Throughput", f"{bat['cycles_per_day']*bat['cap_mwh']*2:.1f} MWh", "Derived"],
             ["Actual Cycles Today",  f"{actual_cycles:.3f}x",           "Simulated result"],
@@ -342,9 +342,9 @@ def build_report(
     pdf.data_table(
         ["Metric", "Value"],
         [
-            ["DA Price Range",     f"€{min_da:.1f} – €{max_da:.1f}/MWh"],
-            ["Average DA Price",   f"€{avg_da:.1f}/MWh"],
-            ["DA Spread",          f"€{max_da-min_da:.1f}/MWh"],
+            ["DA Price Range",     f"EUR {min_da:.1f} – EUR {max_da:.1f}/MWh"],
+            ["Average DA Price",   f"EUR {avg_da:.1f}/MWh"],
+            ["DA Spread",          f"EUR {max_da-min_da:.1f}/MWh"],
             ["DA Revenue (Day)",   _euro(total_da)],
             ["DA Revenue (Annual)",_euro(total_da * 365)],
         ],
@@ -354,10 +354,10 @@ def build_report(
     pdf.data_table(
         ["Market", "MW Committed", "Avg Cap Price", "Daily Revenue", "Annual Est."],
         [
-            ["FCR",            f"{reserves['fcr']:.2f} MW",   f"€{avg_fcr:.2f}/MW/h", _euro(total_fcr),  _euro(total_fcr*365)],
+            ["FCR",            f"{reserves['fcr']:.2f} MW",   f"EUR {avg_fcr:.2f}/MW/h", _euro(total_fcr),  _euro(total_fcr*365)],
             ["aFRR (cap+act)", f"{reserves['afrr_u']:.2f}↑/{reserves['afrr_d']:.2f}↓ MW",
-             f"€{prices['afrr_u'].mean():.2f}/MW/h",      _euro(total_afrr), _euro(total_afrr*365)],
-            ["mFRR",           f"{reserves['mfrr']:.2f} MW",  f"€{prices['mfrr_c'].mean():.2f}/MW/h", _euro(total_mfrr), _euro(total_mfrr*365)],
+             f"EUR {prices['afrr_u'].mean():.2f}/MW/h",      _euro(total_afrr), _euro(total_afrr*365)],
+            ["mFRR",           f"{reserves['mfrr']:.2f} MW",  f"EUR {prices['mfrr_c'].mean():.2f}/MW/h", _euro(total_mfrr), _euro(total_mfrr*365)],
             ["TOTAL RESERVES", "—",                           "—",
              _euro(total_fcr+total_afrr+total_mfrr), _euro((total_fcr+total_afrr+total_mfrr)*365)],
         ],
@@ -406,7 +406,7 @@ def build_report(
         ("Simple Payback",f"{fin['payback']:.1f} yr", AMBER),
         ("Min DSCR",      f"{fin['min_dscr']:.2f}x",  dscr_color),
         ("Avg DSCR",      f"{fin['avg_dscr']:.2f}x",  GREEN if fin["avg_dscr"] >= 1.4 else AMBER),
-        ("LCOS",          f"€{fin['lcos']:.1f}/MWh",  NAVY),
+        ("LCOS",          f"EUR {fin['lcos']:.1f}/MWh",  NAVY),
     ])
     pdf.callout_box(
         f"DEBT SERVICEABILITY: {dscr_sig}",
@@ -488,9 +488,9 @@ def build_report(
     for _, r in sel.iterrows():
         act = f"+{r['dch']:.2f}MW" if r["dch"] > 0.01 else (f"-{r['chg']:.2f}MW" if r["chg"] > 0.01 else "Hold")
         sch_rows.append([
-            r["time"], f"€{r['da_price']:.1f}", f"{r['soc_pct']:.1f}%",
-            act, f"€{r['da_rev']:.2f}", f"€{r['fcr_rev']:.2f}",
-            f"€{r['afrr_rev']:.2f}", f"€{r['net']:.2f}",
+            r["time"], f"EUR {r['da_price']:.1f}", f"{r['soc_pct']:.1f}%",
+            act, f"EUR {r['da_rev']:.2f}", f"EUR {r['fcr_rev']:.2f}",
+            f"EUR {r['afrr_rev']:.2f}", f"EUR {r['net']:.2f}",
         ])
     pdf.data_table(
         ["Hour", "DA Price", "SOC%", "Dispatch", "DA Rev", "FCR Rev", "aFRR Rev", "Net"],
@@ -568,9 +568,9 @@ def build_report(
         f"the typical renewable energy equity return threshold of 10–12%. The minimum DSCR of "
         f"{fin['min_dscr']:.2f}x "
         f"{'satisfies' if fin['min_dscr'] >= 1.25 else 'does not satisfy'} standard project finance requirements. "
-        f"The LCOS of €{fin['lcos']:.1f}/MWh "
+        f"The LCOS of EUR {fin['lcos']:.1f}/MWh "
         f"{'is competitive with' if fin['lcos'] <= avg_da else 'exceeds'} "
-        f"the simulated average DA price of €{avg_da:.1f}/MWh."
+        f"the simulated average DA price of EUR {avg_da:.1f}/MWh."
     )
     pdf.callout_box(
         f"OVERALL RECOMMENDATION: {irr_sig}",
