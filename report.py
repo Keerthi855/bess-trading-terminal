@@ -1,5 +1,5 @@
 """
-BESS Trading Simulator — PDF Report Generator
+BESS Trading Simulator - PDF Report Generator
 Uses fpdf2 for full investor-grade report generation
 """
 
@@ -62,7 +62,7 @@ class BESSReport(FPDF):
         self.line(18, self.get_y(), 192, self.get_y())
         self.set_font("Helvetica", "I", 7)
         self.set_text_color(*MGRAY)
-        self.cell(0, 6, "Proprietary & Confidential — Battery Energy Storage System Trading Platform — DE-LU Bidding Zone", align="C")
+        self.cell(0, 6, "Proprietary & Confidential - Battery Energy Storage System Trading Platform - DE-LU Bidding Zone", align="C")
 
     # ── Helpers ──────────────────────────────────────────
     def section_title(self, txt, level=1):
@@ -217,7 +217,7 @@ def build_report(
     pdf.set_font("Helvetica", "I", 9)
     pdf.set_text_color(180, 200, 230)
     pdf.set_xy(18, 10)
-    pdf.cell(0, 6, "CONFIDENTIAL  ·  BATTERY ENERGY STORAGE SYSTEM  ·  INVESTMENT REPORT", align="C")
+    pdf.cell(0, 6, "CONFIDENTIAL  -  BATTERY ENERGY STORAGE SYSTEM  -  INVESTMENT REPORT", align="C")
     pdf.set_font("Helvetica", "B", 28)
     pdf.set_text_color(*WHITE)
     pdf.set_xy(18, 20)
@@ -229,7 +229,7 @@ def build_report(
     pdf.set_font("Helvetica", "I", 10)
     pdf.set_text_color(180, 210, 240)
     pdf.set_xy(18, 47)
-    pdf.cell(0, 6, f"{bat['cap_mwh']} MWh / {bat['pwr_mw']} MW  ·  {scenario.upper()} Market Scenario  ·  DE-LU Bidding Zone", align="C")
+    pdf.cell(0, 6, f"{bat['cap_mwh']} MWh / {bat['pwr_mw']} MW  -  {scenario.upper()} Market Scenario  -  DE-LU Bidding Zone", align="C")
 
     # Metric boxes
     pdf.set_fill_color(*LGRAY)
@@ -301,8 +301,8 @@ def build_report(
         f"SIMULATION VERDICT: {profit_sig} TRADING SIGNAL",
         f"Daily P&L: {_euro(net_day)}  |  Annual Est.: {_euro(net_day*365)}  |  "
         f"Cycles/Day: {actual_cycles:.2f}x of {bat['cycles_per_day']}x limit\n"
-        f"FCR: {reserves['fcr']:.2f} MW  |  aFRR↑: {reserves['afrr_u']:.2f} MW  |  "
-        f"aFRR↓: {reserves['afrr_d']:.2f} MW  |  mFRR: {reserves['mfrr']:.2f} MW",
+        f"FCR: {reserves['fcr']:.2f} MW  |  aFRR Up: {reserves['afrr_u']:.2f} MW  |  "
+        f"aFRR Dn: {reserves['afrr_d']:.2f} MW  |  mFRR: {reserves['mfrr']:.2f} MW",
         bg=LGRAY if profit_sig == "STRONG" else (245, 243, 220) if profit_sig == "MODERATE" else (254, 226, 226),
         border=GREEN if profit_sig == "STRONG" else (AMBER if profit_sig == "MODERATE" else RED)
     )
@@ -318,7 +318,7 @@ def build_report(
             ["Min State of Charge",  f"{bat['min_soc_pct']}%",          "Protection limit"],
             ["Max State of Charge",  f"{bat['max_soc_pct']}%",          "Protection limit"],
             ["Usable Energy",        f"{bat['cap_mwh']*(bat['max_soc_pct']-bat['min_soc_pct'])/100:.2f} MWh", "Available for dispatch"],
-            ["Round-Trip Efficiency",f"{bat['eta']}%",                  "sqrt(η) split per IEC"],
+            ["Round-Trip Efficiency",f"{bat['eta']}%",                  "sqrt(?) split per IEC"],
             ["Degradation Cost",     f"EUR {bat['deg_cost']}/MWh",         "Linear throughput model"],
             ["Cycles/Day Limit",     f"{bat['cycles_per_day']}x",       "User-defined constraint"],
             ["Max Daily Throughput", f"{bat['cycles_per_day']*bat['cap_mwh']*2:.1f} MWh", "Derived"],
@@ -329,7 +329,7 @@ def build_report(
     )
     pdf.callout_box(
         "FCR SOC CONSTRAINT (SOGL ART. 156)",
-        f"FCR requires SOC to remain within 25–75% of usable capacity during reserve delivery. "
+        f"FCR requires SOC to remain within 25-75% of usable capacity during reserve delivery. "
         f"FCR committed: {reserves['fcr']:.2f} MW ({reserves['fcr']/bat['pwr_mw']*100:.0f}% of max power). "
         f"This constraint is enforced in all 24 simulation hours.",
         bg=LBLUE, border=NAVY
@@ -342,7 +342,7 @@ def build_report(
     pdf.data_table(
         ["Metric", "Value"],
         [
-            ["DA Price Range",     f"EUR {min_da:.1f} – EUR {max_da:.1f}/MWh"],
+            ["DA Price Range",     f"EUR {min_da:.1f} - EUR {max_da:.1f}/MWh"],
             ["Average DA Price",   f"EUR {avg_da:.1f}/MWh"],
             ["DA Spread",          f"EUR {max_da-min_da:.1f}/MWh"],
             ["DA Revenue (Day)",   _euro(total_da)],
@@ -355,10 +355,10 @@ def build_report(
         ["Market", "MW Committed", "Avg Cap Price", "Daily Revenue", "Annual Est."],
         [
             ["FCR",            f"{reserves['fcr']:.2f} MW",   f"EUR {avg_fcr:.2f}/MW/h", _euro(total_fcr),  _euro(total_fcr*365)],
-            ["aFRR (cap+act)", f"{reserves['afrr_u']:.2f}↑/{reserves['afrr_d']:.2f}↓ MW",
+            ["aFRR (cap+act)", f"{reserves['afrr_u']:.2f} Up/{reserves['afrr_d']:.2f} Dn MW",
              f"EUR {prices['afrr_u'].mean():.2f}/MW/h",      _euro(total_afrr), _euro(total_afrr*365)],
             ["mFRR",           f"{reserves['mfrr']:.2f} MW",  f"EUR {prices['mfrr_c'].mean():.2f}/MW/h", _euro(total_mfrr), _euro(total_mfrr*365)],
-            ["TOTAL RESERVES", "—",                           "—",
+            ["TOTAL RESERVES", "-",                           "-",
              _euro(total_fcr+total_afrr+total_mfrr), _euro((total_fcr+total_afrr+total_mfrr)*365)],
         ],
         [36, 44, 34, 32, 28]
@@ -372,7 +372,7 @@ def build_report(
             ["aFRR (Capacity+Activation)", _euro(total_afrr), _euro(total_afrr*365), _pct(total_afrr/max(net_day,1)*100)],
             ["mFRR (Capacity+Activation)", _euro(total_mfrr), _euro(total_mfrr*365), _pct(total_mfrr/max(net_day,1)*100)],
             ["Degradation Cost",           f"({_euro(abs(schedule['deg_cost'].sum()))})",
-             f"({_euro(abs(schedule['deg_cost'].sum())*365)})", "—"],
+             f"({_euro(abs(schedule['deg_cost'].sum())*365)})", "-"],
             ["NET PROFIT",                 _euro(net_day),    _euro(net_day*365),     "100%"],
         ],
         [58, 34, 40, 24]
@@ -388,12 +388,12 @@ def build_report(
             ["Total CAPEX",          _euro(fin["total_capex"]),  "100%"],
             ["Equity Contribution",  _euro(fin["equity"]),       _pct(fin_params["equity_pct"])],
             ["Senior Debt",          _euro(fin["loan_amt"]),     _pct(100-fin_params["equity_pct"])],
-            ["Annual Debt Service",  _euro(fin["ann_ds"]),       "—"],
-            ["Loan Rate",            _pct(fin_params["loan_rate"]), "—"],
-            ["Loan Term",            f"{fin_params['loan_term_yrs']} years", "—"],
-            ["Annual O&M",           _euro(fin["ann_om"]),       "—"],
-            ["Annual Insurance",     _euro(fin["ann_ins"]),      "—"],
-            ["Total Annual Fixed",   _euro(fin["ann_fixed"]),    "—"],
+            ["Annual Debt Service",  _euro(fin["ann_ds"]),       "-"],
+            ["Loan Rate",            _pct(fin_params["loan_rate"]), "-"],
+            ["Loan Term",            f"{fin_params['loan_term_yrs']} years", "-"],
+            ["Annual O&M",           _euro(fin["ann_om"]),       "-"],
+            ["Annual Insurance",     _euro(fin["ann_ins"]),      "-"],
+            ["Total Annual Fixed",   _euro(fin["ann_fixed"]),    "-"],
         ],
         [70, 56, 48]
     )
@@ -411,11 +411,11 @@ def build_report(
     pdf.callout_box(
         f"DEBT SERVICEABILITY: {dscr_sig}",
         f"Minimum DSCR: {fin['min_dscr']:.2f}x  |  Average DSCR: {fin['avg_dscr']:.2f}x\n"
-        f"Lenders typically require DSCR ≥ 1.25x. "
+        f"Lenders typically require DSCR ? 1.25x. "
         + ("This project meets standard lender requirements." if fin["min_dscr"] >= 1.25
-           else "This project marginally meets minimum requirements — consider higher equity or cash reserves."
+           else "This project marginally meets minimum requirements - consider higher equity or cash reserves."
            if fin["min_dscr"] >= 1.1
-           else "This project does NOT meet standard DSCR requirements — restructure financing."),
+           else "This project does NOT meet standard DSCR requirements - restructure financing."),
         bg=LGRAY if dscr_sig == "STRONG" else (245, 243, 220) if dscr_sig == "ACCEPTABLE" else (254, 226, 226),
         border=dscr_color
     )
@@ -448,7 +448,7 @@ def build_report(
             _euro(r["revenue"]),
             f"({_euro(r['om'])})",
             _euro(r["ebitda"]),
-            f"({_euro(r['ds'])})" if r["ds"] > 0 else "—",
+            f"({_euro(r['ds'])})" if r["ds"] > 0 else "-",
             _euro(r["fcf"]),
             f"{r['dscr']:.2f}x",
         ])
@@ -474,7 +474,7 @@ def build_report(
             ["Actual Cycles Today",   f"{actual_cycles:.3f}x"],
             ["Cycles Limit",          f"{bat['cycles_per_day']}x/day"],
             ["SOC Constraint Violations", "0 (all hours within limits)"],
-            ["FCR SOC Window",        "Maintained — 25–75% range preserved"],
+            ["FCR SOC Window",        "Maintained - 25-75% range preserved"],
         ],
         [90, 84]
     )
@@ -520,7 +520,7 @@ def build_report(
             ["FCR price erosion",             "Medium", "Medium", "Multi-market stacking; switch to aFRR"],
             ["Regulatory change",             "Low",    "High",   "Monitor ENTSO-E policy changes"],
             ["Battery degradation > model",   "Medium", "Medium", "Use LFP; conservative deg cost"],
-            ["Grid curtailment (EnWG §13)",   "Low",    "Medium", "TSO signal monitoring"],
+            ["Grid curtailment (EnWG ?13)",   "Low",    "Medium", "TSO signal monitoring"],
             ["Interest rate increase",        "Low",    "Low",    "Recommend fixed-rate loan"],
             ["Activation rate below forecast","Medium", "Low",    "Cap revenue still earned"],
         ],
@@ -532,23 +532,23 @@ def build_report(
     pdf.data_table(
         ["Dimension", "Rating", "Detail"],
         [
-            ["Mathematical Optimality", "✓ Guaranteed", "DP backward induction; global optimum within SOC discretization"],
-            ["Regulatory Compliance",   "✓ Verified",   "FCR ≥1MW, mFRR ≥5MW, SOC window, capacity stacking enforced"],
-            ["Settlement Accuracy",     "✓ ±2%",        "Validated vs ENTSO-E published settlement data"],
-            ["Price Model Calibration", "✓ R²=0.83-0.91","4 years DE market data; scenario-matched"],
-            ["Cycles/Day Enforcement",  "✓ Hard limit",  "Throughput capped exactly at user-specified level"],
-            ["Efficiency Treatment",    "✓ Thermodynamic","Symmetric sqrt(η) per IEC 62933-2"],
-            ["Financial Model",         "✓ Standard",    "DCF per ICMA / CFA Institute standards"],
-            ["Degradation Model",       "⚠ ±15%",        "Linear throughput; calendar aging excluded in v2.4.1"],
-            ["Multi-year Projection",   "⚠ Indicative",  "Based on single day × 365; seasonality not modeled"],
+            ["Mathematical Optimality", "OK Guaranteed", "DP backward induction; global optimum within SOC discretization"],
+            ["Regulatory Compliance",   "OK Verified",   "FCR ?1MW, mFRR ?5MW, SOC window, capacity stacking enforced"],
+            ["Settlement Accuracy",     "OK ?2%",        "Validated vs ENTSO-E published settlement data"],
+            ["Price Model Calibration", "OK R?=0.83-0.91","4 years DE market data; scenario-matched"],
+            ["Cycles/Day Enforcement",  "OK Hard limit",  "Throughput capped exactly at user-specified level"],
+            ["Efficiency Treatment",    "OK Thermodynamic","Symmetric sqrt(?) per IEC 62933-2"],
+            ["Financial Model",         "OK Standard",    "DCF per ICMA / CFA Institute standards"],
+            ["Degradation Model",       "(!) ?15%",        "Linear throughput; calendar aging excluded in v2.4.1"],
+            ["Multi-year Projection",   "(!) Indicative",  "Based on single day ? 365; seasonality not modeled"],
         ],
         [55, 28, 91]
     )
     pdf.callout_box(
         "RELIABILITY STATEMENT",
-        "Investment sizing and strategy decisions: HIGH confidence (85–95%).\n"
-        "Precise daily P&L forecasting: MODERATE confidence (65–80%) — use live API feeds.\n"
-        "Multi-year projections: INDICATIVE ±25% range.\n"
+        "Investment sizing and strategy decisions: HIGH confidence (85-95%).\n"
+        "Precise daily P&L forecasting: MODERATE confidence (65-80%) - use live API feeds.\n"
+        "Multi-year projections: INDICATIVE ?25% range.\n"
         "All results are fully reproducible using the simulation seed parameter.",
         bg=LBLUE, border=NAVY
     )
@@ -565,7 +565,7 @@ def build_report(
     pdf.body_text(
         f"The equity IRR of {_pct(fin['irr_equity'])} "
         f"{'exceeds' if fin['irr_equity'] >= 12 else 'meets' if fin['irr_equity'] >= 8 else 'falls below'} "
-        f"the typical renewable energy equity return threshold of 10–12%. The minimum DSCR of "
+        f"the typical renewable energy equity return threshold of 10-12%. The minimum DSCR of "
         f"{fin['min_dscr']:.2f}x "
         f"{'satisfies' if fin['min_dscr'] >= 1.25 else 'does not satisfy'} standard project finance requirements. "
         f"The LCOS of EUR {fin['lcos']:.1f}/MWh "
