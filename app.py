@@ -143,8 +143,6 @@ PLOT_LAYOUT = dict(
     paper_bgcolor="#050b14",
     plot_bgcolor="#0a1525",
     font=dict(family="JetBrains Mono", size=10, color="#c4ddf0"),
-    xaxis=dict(gridcolor="#162840", linecolor="#162840", zerolinecolor="#162840"),
-    yaxis=dict(gridcolor="#162840", linecolor="#162840", zerolinecolor="#162840"),
     legend=dict(bgcolor="#0a1525", bordercolor="#162840", borderwidth=1, font=dict(size=9)),
     margin=dict(l=50, r=30, t=30, b=40),
     height=280,
