@@ -145,7 +145,6 @@ PLOT_LAYOUT = dict(
     font=dict(family="JetBrains Mono", size=10, color="#c4ddf0"),
     legend=dict(bgcolor="#0a1525", bordercolor="#162840", borderwidth=1, font=dict(size=9)),
     margin=dict(l=50, r=30, t=30, b=40),
-    height=280,
 )
 
 def apply_theme(fig, **kwargs):
