@@ -38,7 +38,6 @@ class BESSReport(FPDF):
         self.report_title = report_title
         self.set_auto_page_break(auto=True, margin=18)
         self.set_margins(18, 18, 18)
-        self.add_font("DejaVu", style="", fname=None)  # fall back to helvetica
 
     def header(self):
         if self.page_no() == 1:
